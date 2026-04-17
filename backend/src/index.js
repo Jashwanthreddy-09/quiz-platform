@@ -64,7 +64,9 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' });
 });
-
+app.get("/", (req, res) => {
+  res.send("Backend is running successfully 🚀");
+});
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
