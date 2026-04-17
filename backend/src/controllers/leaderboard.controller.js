@@ -9,7 +9,7 @@ exports.getQuizLeaderboard = async (req, res) => {
               r.score, 
               r.time_taken, 
               r.completed_at, 
-              u.name as user_name,
+              u.name as student_name,
               u.id as user_id
             FROM results r
             JOIN users u ON r.user_id = u.id
@@ -30,13 +30,13 @@ exports.getGlobalLeaderboard = async (req, res) => {
     // Global ranking based on average score across all quizzes
     const result = await db.execute(`
       SELECT 
-        u.name as user_name,
-        AVG(r.score) as average_score,
+        u.name as student_name,
+        ROUND(AVG(r.score), 1) as score,
         COUNT(r.id) as quizzes_taken
       FROM users u
       JOIN results r ON u.id = r.user_id
       GROUP BY u.id
-      ORDER BY average_score DESC
+      ORDER BY score DESC
       LIMIT 10
     `);
     res.json(result.rows);

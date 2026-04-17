@@ -1,6 +1,57 @@
 const db = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const path = require('path');
+const fs = require('fs');
+
+exports.getProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const result = await db.execute({
+      sql: "SELECT id, name, username, email, role, profile_pic FROM users WHERE id = ?",
+      args: [userId]
+    });
+
+    if (result.rows.length === 0) return res.status(404).json({ error: "User not found" });
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { name, username } = req.body;
+
+    await db.execute({
+      sql: "UPDATE users SET name = ?, username = ? WHERE id = ?",
+      args: [name, username, userId]
+    });
+
+    res.json({ message: "Profile updated successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.uploadProfilePic = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+
+    const filePath = `/uploads/profiles/${req.file.filename}`;
+    
+    await db.execute({
+      sql: "UPDATE users SET profile_pic = ? WHERE id = ?",
+      args: [filePath, userId]
+    });
+
+    res.json({ message: "Profile picture updated", filePath });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 exports.register = async (req, res) => {
   try {

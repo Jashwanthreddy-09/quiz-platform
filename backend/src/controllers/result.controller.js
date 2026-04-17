@@ -32,10 +32,15 @@ exports.getResultDetail = async (req, res) => {
               aa.answer as student_answer
             FROM questions q
             LEFT JOIN attempt_answers aa ON q.id = aa.question_id
-            JOIN attempts a ON aa.attempt_id = a.id
-            WHERE q.quiz_id = ? AND a.user_id = ? AND a.status = 'submitted'
+            LEFT JOIN attempts a ON aa.attempt_id = a.id
+            WHERE q.quiz_id = ? 
+            AND (a.id IS NULL OR a.id = (
+              SELECT id FROM attempts 
+              WHERE user_id = ? AND quiz_id = ? AND status = 'submitted' 
+              ORDER BY id DESC LIMIT 1
+            ))
             ORDER BY q.id ASC`,
-      args: [result.quiz_id, userId]
+      args: [result.quiz_id, userId, result.quiz_id]
     });
     
     // Note: The above join might need refinement if multiple attempts exist.

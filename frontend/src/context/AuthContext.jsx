@@ -28,9 +28,12 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('token', userToken);
     setToken(userToken);
     setUser(userData);
-    navigate('/dashboard');
+    if (userData.role === 'admin') {
+      navigate('/admin/dashboard');
+    } else {
+      navigate('/dashboard');
+    }
   };
-
   const logout = () => {
     localStorage.removeItem('token');
     setToken(null);

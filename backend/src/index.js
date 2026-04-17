@@ -1,4 +1,8 @@
 require('dotenv').config();
+const path = require('path');
+// Add global BigInt serialization patch for JSON responses
+BigInt.prototype.toJSON = function () { return Number(this); };
+
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -23,9 +27,6 @@ require('./config/passport');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-
-// Initialize Database
-initDb();
 
 // Middleware
 app.use(cors({
@@ -56,6 +57,9 @@ app.use('/api/execute', executionRoutes);
 app.use('/api/results', resultRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 
+// Static files for uploads
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 // Health Check
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' });
@@ -67,6 +71,18 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Initialize Database & Start Server
+const startServer = async () => {
+  try {
+    await initDb();
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("CRITICAL: Failed to start server due to DB error:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
+console.log("JWT SECRET:", process.env.JWT_SECRET);

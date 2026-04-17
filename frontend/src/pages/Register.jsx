@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../services/api';
-import { GraduationCap, Mail, Lock, User, AlertCircle, ArrowRight } from 'lucide-react';
+import { GraduationCap, Mail, Lock, User, AlertCircle, ArrowRight, Sparkles, ShieldCheck } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -27,63 +28,39 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row-reverse bg-slate-50 font-sans">
-      
-      {/* Right Branding Panel */}
-      <div className="hidden md:flex flex-col justify-between w-5/12 bg-purple-600 p-12 text-white relative overflow-hidden">
-        <div className="relative z-10 flex justify-end">
-          <Link to="/" className="flex items-center gap-3">
-            <span className="text-2xl font-black tracking-tight text-white">QuizMaster</span>
-            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-md">
-              <GraduationCap className="w-6 h-6 text-purple-600" />
-            </div>
-          </Link>
-        </div>
-        
-        <div className="relative z-10 mb-20 text-right">
-          <h2 className="text-4xl font-black text-white leading-tight mb-6">
-            Join the future of <br />
-            <span className="text-purple-200">learning.</span>
-          </h2>
-          <p className="text-purple-100 font-medium text-lg ml-auto max-w-sm">
-            Create an account to participate in live exams, view detailed performance analytics, and compete on the leaderboard.
-          </p>
-        </div>
+    <div className="min-h-screen relative flex items-center justify-center p-6 overflow-hidden">
+      {/* Background Blobs */}
+      <div className="blob w-[600px] h-[600px] bg-purple-600/10 -top-20 -right-20" />
+      <div className="blob w-[500px] h-[500px] bg-indigo-600/10 -bottom-20 -left-20 delay-700" />
 
-        {/* Decorative background circle */}
-        <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-50"></div>
-        <div className="absolute top-10 -left-20 w-72 h-72 bg-indigo-500 rounded-full blur-3xl opacity-40"></div>
-      </div>
-
-      {/* Left Registration Form */}
-      <div className="flex-1 flex justify-center items-center p-6 md:p-12">
-        <div className="w-full max-w-md">
-          {/* Mobile Header */}
-          <div className="md:hidden flex flex-col items-center justify-center gap-2 mb-10 w-full">
-            <div className="w-12 h-12 rounded-2xl bg-purple-600 flex items-center justify-center shadow-md">
-              <GraduationCap className="w-8 h-8 text-white" />
-            </div>
-            <span className="text-2xl font-black tracking-tight text-slate-800 mt-2">QuizMaster</span>
+      <div className="w-full max-w-5xl grid md:grid-cols-2 glass-card rounded-[2.5rem] overflow-hidden">
+        {/* Left Panel - Form */}
+        <div className="p-8 md:p-12 lg:p-16 flex flex-col justify-center order-2 md:order-1">
+          <div className="mb-10">
+            <h3 className="text-3xl font-bold text-white mb-2">Create Account</h3>
+            <p className="text-slate-400">Join thousands of students and educators today</p>
           </div>
 
-          <div className="bg-white rounded-3xl p-8 md:p-10 shadow-xl shadow-slate-200/50 border border-slate-100 w-full">
-            <h3 className="text-2xl font-bold text-slate-900 mb-8 text-center md:text-left">Create Account</h3>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl flex items-center gap-3 text-sm font-medium"
+              >
+                <AlertCircle className="w-5 h-5 flex-shrink-0" /> {error}
+              </motion.div>
+            )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-              {error && (
-                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl flex items-center gap-3 text-sm font-medium">
-                  <AlertCircle className="w-5 h-5 flex-shrink-0" /> {error}
-                </div>
-              )}
-
+            <div className="grid grid-cols-1 gap-5">
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700 ml-1">Full Name</label>
-                <div className="relative group">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-purple-600 transition-colors" />
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Full Name</label>
+                <div className="relative">
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
                   <input 
                     type="text" 
                     required
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-12 text-slate-900 font-medium focus:ring-2 focus:ring-purple-500 focus:bg-white focus:border-transparent outline-none transition-all"
+                    className="input-premium pl-12"
                     placeholder="John Doe"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -92,14 +69,14 @@ const Register = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
-                <div className="relative group">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-purple-600 transition-colors" />
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Email Address</label>
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
                   <input 
                     type="email" 
                     required
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-12 text-slate-900 font-medium focus:ring-2 focus:ring-purple-500 focus:bg-white focus:border-transparent outline-none transition-all"
-                    placeholder="name@example.com"
+                    className="input-premium pl-12"
+                    placeholder="name@company.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
@@ -107,13 +84,13 @@ const Register = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700 ml-1">Password</label>
-                <div className="relative group">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-purple-600 transition-colors" />
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
                   <input 
                     type="password" 
                     required
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-12 text-slate-900 font-medium focus:ring-2 focus:ring-purple-500 focus:bg-white focus:border-transparent outline-none transition-all"
+                    className="input-premium pl-12"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -122,30 +99,65 @@ const Register = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700 ml-1">Account Role</label>
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Account Role</label>
                 <select 
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-slate-900 font-medium focus:ring-2 focus:ring-purple-500 focus:bg-white focus:border-transparent outline-none transition-all appearance-none"
+                  className="input-premium appearance-none bg-[#030712]"
                 >
                   <option value="student">Student Account</option>
                   <option value="admin">Instructor / Admin</option>
                 </select>
               </div>
+            </div>
 
-              <button 
-                type="submit"
-                disabled={isLoading}
-                className="w-full flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-bold py-3.5 rounded-xl transition-all shadow-md mt-4"
-              >
-                {isLoading ? 'Creating Account...' : 'Create Account'} <ArrowRight className="w-4 h-4" />
-              </button>
-            </form>
+            <button 
+              type="submit"
+              disabled={isLoading}
+              className="btn-premium w-full flex items-center justify-center gap-2 mt-4 text-white"
+            >
+              {isLoading ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <>Create Account <ArrowRight className="w-4 h-4" /></>
+              )}
+            </button>
+          </form>
 
-            <p className="mt-8 text-center text-slate-500 text-sm font-medium">
-              Already have an account? {' '}
-              <Link to="/login" className="text-purple-600 hover:text-purple-700 font-bold transition-colors">Sign in</Link>
+          <p className="text-center text-slate-400 text-sm mt-8">
+            Already have an account? {' '}
+            <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-bold transition-colors">Sign in</Link>
+          </p>
+        </div>
+
+        {/* Right Panel - Branding */}
+        <div className="hidden md:flex flex-col justify-between p-12 bg-purple-600/10 relative order-1 md:order-2">
+          <Link to="/" className="flex items-center gap-3 relative z-10 group justify-end">
+            <span className="text-2xl font-black tracking-tight text-white">QuizMaster</span>
+            <div className="w-10 h-10 rounded-xl bg-purple-500 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
+              <GraduationCap className="w-6 h-6" />
+            </div>
+          </Link>
+
+          <div className="relative z-10 text-right">
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-bold uppercase tracking-widest mb-6"
+            >
+              <ShieldCheck className="w-3 h-3" /> Privacy Focused
+            </motion.div>
+            <h2 className="text-4xl font-extrabold text-white leading-tight mb-6">
+              Empower your <br />
+              <span className="premium-gradient-text">learning journey.</span>
+            </h2>
+            <p className="text-slate-400 text-lg leading-relaxed ml-auto max-w-xs">
+              Take control of your assessments with our powerful suite of tools designed for excellence.
             </p>
+          </div>
+
+          <div className="text-xs text-slate-500 font-medium text-right">
+            By creating an account, you agree to our Terms.
           </div>
         </div>
       </div>
